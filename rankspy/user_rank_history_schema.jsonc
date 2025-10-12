@@ -1,0 +1,193 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Washiez - Multi‑user Rank History",
+    "description": "Structure for Washiez rank history with strict Discord‑message URL validation",
+    "type": "object",
+    "properties": {
+        "last_edited": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Timestamp of the last edit to the whole document."
+        }
+    },
+    "required": ["last_edited"],
+
+    /* ---------------------------------------------------- */
+    /*  dynamic user entries - numeric Discord ID keys    */
+    /* ---------------------------------------------------- */
+    "patternProperties": {
+        "^[0-9]+$": { "$ref": "#/definitions/User" }
+    },
+    "additionalProperties": false,
+
+    "definitions": {
+        "User": {
+            "type": "object",
+            "properties": {
+                "rblx_username": { "type": "string" },
+                "discord_id": { "type": "integer" },
+                "first_customer_since": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "last_rank": { "$ref": "#/definitions/RankName" },
+                "last_rank_change": { "type": "integer", "format": "int64" },
+                "rank_history": { "$ref": "#/definitions/RankHistory" }
+            },
+            "required": [
+                "rblx_username",
+                "discord_id",
+                "first_customer_since",
+                "last_rank",
+                "last_rank_change",
+                "rank_history"
+            ],
+            "additionalProperties": false
+        },
+
+        /*  ----------  RankName  ----------  */
+        "RankName": {
+            "type": "string",
+            "enum": [
+                "Trainee",
+                "Junior Operator",
+                "Senior Operator",
+                "Head Operator",
+                "Shift Leader",
+                "Supervisor"
+            ]
+        },
+
+        /*  ----------  RankHistory  ----------  */
+        "RankHistory": {
+            "type": "object",
+            "properties": {
+                "Entry Team": { "$ref": "#/definitions/EntryTeam" },
+                "Supervision Team": { "$ref": "#/definitions/SupervisionTeam" }
+            },
+            "required": ["Entry Team", "Supervision Team"],
+            "additionalProperties": false
+        },
+
+        /*  ----------  EntryTeam  ----------  */
+        "EntryTeam": {
+            "type": "object",
+            "properties": {
+                "Trainee": { "$ref": "#/definitions/RankEntry" },
+                "Junior Operator": {
+                    "$ref": "#/definitions/RankEntryWithTraining"
+                },
+                "Senior Operator": {
+                    "$ref": "#/definitions/RankEntryWithTraining"
+                },
+                "Head Operator": {
+                    "$ref": "#/definitions/RankEntryWithTraining"
+                }
+            },
+            "required": [
+                "Trainee",
+                "Junior Operator",
+                "Senior Operator",
+                "Head Operator"
+            ],
+            "additionalProperties": false
+        },
+
+        /*  ----------  SupervisionTeam  ----------  */
+        "SupervisionTeam": {
+            "type": "object",
+            "properties": {
+                "Shift Leader": { "$ref": "#/definitions/RankWithPromotion" },
+                "Supervisor": { "$ref": "#/definitions/RankWithPromotion" }
+            },
+            "required": ["Shift Leader", "Supervisor"],
+            "additionalProperties": false
+        },
+
+        /*  ----------  RankEntry  ----------  */
+        "RankEntry": {
+            "type": "object",
+            "properties": {
+                "first_discovered": { "$ref": "#/definitions/Timestamp" },
+                "last_discovered": { "$ref": "#/definitions/Timestamp" }
+            },
+            "required": ["first_discovered", "last_discovered"],
+            "additionalProperties": false
+        },
+
+        /*  ----------  RankEntryWithTraining  ----------  */
+        "RankEntryWithTraining": {
+            "type": "object",
+            "properties": {
+                "first_discovered": { "$ref": "#/definitions/Timestamp" },
+                "likely_which_training": { "$ref": "#/definitions/Timestamp" },
+                "bought": { "type": "boolean" },
+                "last_discovered": { "$ref": "#/definitions/Timestamp" }
+            },
+            "required": [
+                "first_discovered",
+                "likely_which_training",
+                "bought",
+                "last_discovered"
+            ],
+            "additionalProperties": false
+        },
+
+        /*  ----------  RankWithPromotion  ----------  */
+        "RankWithPromotion": {
+            "type": "object",
+            "properties": {
+                "first_discovered": { "$ref": "#/definitions/Timestamp" },
+                "last_discovered": { "$ref": "#/definitions/Timestamp" },
+                "bought": { "type": "boolean" },
+                "promotion": { "$ref": "#/definitions/Promotion" }
+            },
+            "required": [
+                "first_discovered",
+                "last_discovered",
+                "bought",
+                "promotion"
+            ],
+            "additionalProperties": false
+        },
+
+        /*  ----------  Promotion  ----------  */
+        "Promotion": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["bought", "promoted"]
+                },
+                "promoted_type": {
+                    "type": "string",
+                    "enum": ["ghost", "ingame", "other"]
+                },
+                "promoted_from": { "$ref": "#/definitions/RankName" },
+                "promoted_at": { "$ref": "#/definitions/Timestamp" },
+                /* *** NEW:  link must be a URI and ≤200 characters ** */
+                "promotion_message": {
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 200,
+                    "description": "Link to the Discord announcement message."
+                }
+            },
+            "required": [
+                "type",
+                "promoted_type",
+                "promoted_from",
+                "promoted_at",
+                "promotion_message"
+            ],
+            "additionalProperties": false
+        },
+
+        /*  ----------  Timestamp  ----------  */
+        "Timestamp": {
+            "type": "integer",
+            "format": "int64",
+            "description": "UNIX epoch (seconds)."
+        }
+    }
+}
