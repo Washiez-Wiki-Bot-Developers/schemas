@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Roblox Group Rank Changes Detection Bot Inter-notification Interchange",
+  "type": "object",
+  "properties": {
+    "users_cnt": {
+      "type": "string",
+      "pattern": "^[0-9]+$",
+      "description": "The number of User changes notifying to others. Matches any multi-digit string count (e.g., '1', '10', '154')"
+    },
+    "users": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,11}$"
+          },
+          "role_id_to": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{4,11}$"
+          },
+          "role_id_from": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{4,11}$"
+          },
+          "source": {
+            "type": "string",
+            "description": "Name for the bot notifying others. Bots should replace with \"third-party bots\" as source when it is empty."
+          }
+        },
+        "required": ["user_id", "role_id_to", "role_id_from"]
+      }
+    },
+    "source": {
+      "type": "string"
+    }
+  },
+  "required": ["users_cnt", "users"]
+}
