@@ -28,14 +28,25 @@
           "source": {
             "type": "string",
             "description": "Name for the bot notifying others. Bots should replace with \"third-party bots\" as source when it is empty."
-          }
+          },
+          "ts": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Unix Epoch timestamp when discovered. (e.g., 1779235267)"
+           }
         },
         "required": ["user_id", "role_id_to", "role_id_from"]
       }
     },
     "source": {
       "type": "string"
+    },
+    "ts": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Unix Epoch timestamp (e.g., 1779235267) at the time of reporting."
     }
   },
+  
   "required": ["users_cnt", "users"]
 }
