@@ -3,10 +3,20 @@
   "title": "Roblox Group Rank Changes Detection Bot Inter-notification Interchange",
   "type": "object",
   "properties": {
+    "group_id": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,11}$",
+      "description": "Roblox Group ID string."
+    },
+    "uid": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the payload transaction."
+    },
     "users_cnt": {
       "type": "string",
       "pattern": "^[0-9]+$",
-      "description": "The number of User changes notifying to others. Matches any multi-digit string count (e.g., '1', '10', '154')"
+      "description": "The number of User changes notifying to others."
     },
     "users": {
       "type": "array",
@@ -27,13 +37,13 @@
           },
           "source": {
             "type": "string",
-            "description": "Name for the bot notifying others. Bots should replace with \"third-party bots\" as source when it is empty."
+            "description": "Name for the bot notifying others. Bots replace with 'third-party bots' when empty."
           },
           "ts": {
             "type": "integer",
             "minimum": 0,
-            "description": "Unix Epoch timestamp when discovered. (e.g., 1779235267)"
-           }
+            "description": "Unix Epoch timestamp when discovered."
+          }
         },
         "required": ["user_id", "role_id_to", "role_id_from"]
       }
@@ -44,9 +54,8 @@
     "ts": {
       "type": "integer",
       "minimum": 0,
-      "description": "Unix Epoch timestamp (e.g., 1779235267) at the time of reporting."
+      "description": "Unix Epoch timestamp at the time of reporting."
     }
   },
-  
-  "required": ["users_cnt", "users"]
+  "required": ["group_id", "uid", "users_cnt", "users", "ts"]
 }
